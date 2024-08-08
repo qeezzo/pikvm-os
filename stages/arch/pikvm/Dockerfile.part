@@ -18,8 +18,68 @@ RUN pacman --noconfirm --ask=4 -Syu \
 	&& (mv /boot/cmdline.txt.pacsave /boot/cmdline.txt || true) \
 	&& rm -rf /var/cache/pacman/pkg/* /boot/*.pacnew
 
+
+# custom kvmd
+RUN pacman --noconfirm --ask=4 -S \
+	python-yaml \
+	python-aiohttp \
+	python-aiofiles \
+	python-async-lru \
+	python-passlib \
+	python-pyotp \
+	python-qrcode \
+	python-periphery \
+	python-pyserial \
+	python-pyserial-asyncio \
+	python-spidev \
+	python-setproctitle \
+	python-psutil \
+	python-netifaces \
+	python-systemd \
+	python-dbus \
+	python-dbus-next \
+	python-pygments \
+	python-pyghmi \
+	python-pam \
+	python-pillow \
+	python-xlib \
+	libxkbcommon \
+	python-hidapi \
+	python-six \
+	python-pyrad \
+	python-ldap \
+	python-zstandard \
+	python-mako \
+	libgpiod \
+	freetype2 \
+	v4l-utils \
+	nginx-mainline \
+	dnsmasq \
+	ipmitool \
+	janus-gateway-pikvm \
+	certbot \
+	platform-io-access \
+	ustreamer \
+	dos2unix \
+	parted \
+	run-parts \
+	hostapd \
+	python-pip \
+	python-setuptools
+
+RUN useradd --groups wheel --create-home --home-dir /maker maker
+RUN cd /maker \
+		&& sudo -u maker git clone https://github.com/qeezzo/kvmd kvmd \
+		&& cd kvmd \
+		&& sudo -u maker makepkg \
+		&& pacman -U kvmd-4.2-1-any.pkg.tar.xz --noconfirm \
+		&& pacman -U kvmd-platform-$PLATFORM-$BOARD-4.2-1-any.pkg.tar.xz --noconfirm
+RUN userdel -r maker
+# end -- custom kvmd
+
+
 RUN pkg-install --assume-installed tessdata \
-		kvmd-platform-$PLATFORM-$BOARD \
+		# kvmd-platform-$PLATFORM-$BOARD \
 		kvmd-webterm \
 		kvmd-oled \
 		kvmd-fan \
