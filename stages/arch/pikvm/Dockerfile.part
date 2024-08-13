@@ -75,11 +75,12 @@ RUN cd /maker \
 		&& pacman -U kvmd-4.2-1-any.pkg.tar.xz --noconfirm \
 		&& pacman -U kvmd-platform-$PLATFORM-$BOARD-4.2-1-any.pkg.tar.xz --noconfirm
 RUN userdel -r maker
+RUN sed -i 's/#IgnorePkg *=/IgnorePkg = kvmd*/1' /etc/pacman.conf
 # end -- custom kvmd
 
 
+# kvmd-platform-$PLATFORM-$BOARD \
 RUN pkg-install --assume-installed tessdata \
-		# kvmd-platform-$PLATFORM-$BOARD \
 		kvmd-webterm \
 		kvmd-oled \
 		kvmd-fan \
